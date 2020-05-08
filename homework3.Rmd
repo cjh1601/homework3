@@ -1,0 +1,86 @@
+---
+title: "Homework 3: Heatmaps"
+author: "your name"
+date: "due 11:59pm 6/09/2020"
+output: bookdown::html_document2
+---
+
+# Learning Objectives
+
+1.	Write a few sentences for a journal methods section describing the data and the analysis you are going to perform   
+2. Create a heatmap that shows patterns in the data set  
+3. Describe the information conveyed by the figure  
+
+**Assignment**: Using the same lung data set from homework 2, you will create heatmaps and explore the effect of clustering metrics and variable selection on the strength of the clusters you see in your data.  Write a few sentences to describe the data and methods and to interpret the results. 
+
+Steps to follow:
+
+1. Write a brief introduction to describe the data in your analysis (this can be copied from homework 2) and the methods used to create your heatmap. Describe any other data manipulation you will perform.  
+2. Create a series of 3 heatmaps:
+    a. Use the 500 most variable features and the default clustering settings (euclidean, complete linkage);
+    b. Use the 500 most variable features and the cluster settings pearson and wards, like we used in class; 
+    c. Use 500 features selected at random, and the cluster settings in 2b.   
+Write a caption for each figure that includes the analysis method and data.  Describe any patterns the figures show.
+3. Given all three figures, what do these figures suggest about the changes in gene expression with day?
+4. Verify that your report is reproducible or modify your code so that it is reproducible.  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r loadlibraries}
+library(bookdown)
+library(matrixStats)
+library(ggplot2)
+library(matlab)
+library(ComplexHeatmap)
+```
+
+
+# Load the human alveolar epithelial cell dataset
+
+```{r aecdata}
+   load("../data/aec.rda")
+```
+
+Write a few sentences summarizing the data set here, and the methods you are going to apply to the data.
+
+# Heatmap
+
+## Use 500 most variable features
+
+Create a heatmap and display the log2 expression data using the default settings for clustering methods. Be sure to standardize your gene features. Annotate the samples (columns) with the age of the lung donor, and the day of the differentiation time-course using color bars. Write a figure caption that describes the different components of the figure.  Describe any patterns that you see in the figure.
+
+```{r fig 1}
+
+
+```
+
+Now create a figure using the same features, but changing the pairwise dissimilarity to 1 - pearson correlation and the group clustering criterion to Ward's method. Write a figure caption and describe the results in the figure.
+
+```{r Fig 2}
+
+```
+
+   
+Which figure do you think captures the information in the data better?
+
+
+## Use 500 features selected at random
+
+
+```{r Fig 3}
+
+
+```
+
+
+Based on these 3 figures, describe the strength of the cluster signal you see.
+
+# Report computing environment
+
+Now output the computing environment listing the different software versions installed on your computer.
+
+```{r sessioninfo}
+  sessionInfo()
+```
