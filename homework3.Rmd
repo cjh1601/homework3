@@ -51,7 +51,7 @@ Write a few sentences summarizing the data set here, and the methods you are goi
 
 Create a heatmap and display the log2 expression data using the default settings for clustering methods. Be sure to standardize your gene features. Annotate the samples (columns) with the age of the lung donor, and the day of the differentiation time-course using color bars. Write a figure caption that describes the different components of the figure.  Describe any patterns that you see in the figure.
 
-```{r fig 1}
+```{r fig1,fig.cap=''}
 
 
 ```
