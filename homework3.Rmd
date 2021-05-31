@@ -1,7 +1,7 @@
 ---
 title: "Homework 3: Heatmaps"
 author: "your name"
-date: "due 11:59pm 6/16/2020"
+date: "due 11:59pm 6/15/2021"
 output: bookdown::html_document2
 ---
 
