@@ -1,6 +1,6 @@
 ---
 title: "Homework 3: Heatmaps"
-author: "your name"
+author: "Cassidy Hernandez-Tamayo"
 date: "due 11:59pm 6/13/2023"
 output: bookdown::html_document2
 ---
@@ -33,17 +33,24 @@ library(bookdown)
 library(matrixStats)
 library(ggplot2)
 library(matlab)
+library(devtools)
 library(ComplexHeatmap)
+library(viridis)
 ```
 
 
 # Load the human alveolar epithelial cell dataset
 
 ```{r aecdata}
-   load("../data/aec.rda")
+   load("~/homework2/data/aec.rda")
 ```
 
 Write a few sentences summarizing the data set here, and the methods you are going to apply to the data.
+Our data consist of 17 Illumina HT gene expression arrays from a 5x3 factorial design downloaded from Gene Expression Omnibus (GSE38571). Gene expressions were measured at days 0,2,4,6, and 8 during ages 49, 61, and 66. 
+Feature Selection: How many variables do you select, and what is your crtierion for ranking?
+
+All analyses were performed using Version 4.3.0 of the R programming language.
+
 
 # Heatmap
 
@@ -52,14 +59,62 @@ Write a few sentences summarizing the data set here, and the methods you are goi
 Create a heatmap and display the log2 expression data using the default settings for clustering methods. Be sure to standardize your gene features. Annotate the samples (columns) with the age of the lung donor, and the day of the differentiation time-course using color bars. Write a figure caption that describes the different components of the figure.  Describe any patterns that you see in the figure.
 
 ```{r fig1,fig.cap=''}
+fmad <- matrixStats::rowMads(aec$E) 
+rfilt <- rank(-fmad)
+fidx <- which( rfilt <= 500) 
+rowscale <- function(x) {
+      (x - rowMeans(x))/matrixStats::rowMads(x)
+}
+X <- rowscale(aec$E)[fidx,]
+scX <- scale(X,center=TRUE,scale=matrixStats::colMads(X))
+aec$targets$day <- factor(aec$targets$day,
+                                   levels=c("D0","D2","D4", "D6", "D8"))
+# column heatmap annotation
+colha <- ComplexHeatmap::HeatmapAnnotation(df =
+                       aec$targets[,c("day","age")],
+                 col = list(day = c(D0 = "pink",
+                                      D2 = "purple",
+                                      D4 = "orange",
+                                      D6 = "blue",
+                                      D8 = "red"),
+                            age = c('49' = "grey",
+                                    '61' = "yellow",
+                                    '66' = "lightgreen")
+                                 
+                          ), 
+                which = "column")
+ht <- ComplexHeatmap::Heatmap(scX, column_title = "Samples",
+              row_title = "Features",
+              name = "log2(Expr)",
+              clustering_distance_rows = "euclidean",
+              clustering_method_rows = "complete",
+              clustering_distance_columns = "euclidean",
+              clustering_method_columns = "complete",
+              col = viridis(32),
+              top_annotation = colha,
+              show_column_names = FALSE,
+              show_row_names = FALSE)
 
-
+draw(ht)
 ```
 
 Now create a figure using the same features, but changing the pairwise dissimilarity to 1 - pearson correlation and the group clustering criterion to Ward's method. Write a figure caption and describe the results in the figure.
 
 ```{r Fig 2}
+#call the heatmap **500 features, 1-Pearson dissimilarity**
+ht2 <- ComplexHeatmap::Heatmap(scX, column_title = "Samples",
+              row_title = "Features",
+              name = "log2(Expr)",
+              clustering_distance_rows = "pearson",
+              clustering_method_rows = "ward.D2",
+              clustering_distance_columns = "pearson",
+              clustering_method_columns = "ward.D2",
+              col = viridis(32),
+              top_annotation = colha,
+              show_column_names = FALSE,
+              show_row_names = FALSE)
 
+draw(ht2)
 ```
 
    
@@ -70,8 +125,23 @@ Which figure do you think captures the information in the data better?
 
 
 ```{r Fig 3}
+set.seed(2022)
+idx2 <- sample(c(1:nrow(aec$E)),500)
+X2 <- rowscale(aec$E)[idx2,]
+scX2 <- scale(X2,center=TRUE,scale=matrixStats::colMads(X2))
+ht3 <- ComplexHeatmap::Heatmap(scX2, column_title = "Samples",
+              row_title = "Features",
+              name = "log2(Expr)",
+              clustering_distance_rows = "pearson",
+              clustering_method_rows = "ward.D2",
+              clustering_distance_columns = "pearson",
+              clustering_method_columns = "ward.D2",
+              col = viridis(32),
+              top_annotation = colha,
+              show_column_names = FALSE,
+              show_row_names = FALSE)
 
-
+draw(ht3)
 ```
 
 
