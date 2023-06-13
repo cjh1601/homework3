@@ -46,11 +46,10 @@ library(viridis)
 ```
 
 Write a few sentences summarizing the data set here, and the methods you are going to apply to the data.
-Our data consist of 17 Illumina HT gene expression arrays from a 5x3 factorial design downloaded from Gene Expression Omnibus (GSE38571). Gene expressions were measured at days 0,2,4,6, and 8 during ages 49, 61, and 66. 
-Feature Selection: How many variables do you select, and what is your crtierion for ranking?
 
-All analyses were performed using Version 4.3.0 of the R programming language.
+Dataset Description: Our data consist of 17 Illumina HT gene expression arrays from a 5x3 factorial design downloaded from Gene Expression Omnibus (GSE38571). Gene expressions were measured at days 0,2,4,6, and 8 during ages 49, 61, and 66 years old. There are 47,231 features on the arrays, and upon data exploration, during day 0 and 4, duplicate measurements were taken from a 61 year old lung cancerdonor.
 
+Methods: We created heat maps in order to assess gene expression changes by day and age. This was done by clustering while utilizing the log2-transformed gene expressions. The first heatmap is clustered utilizing the top 500 most variable features, Euclidean distance as the distance measure, and complete linkage for between-group dissimilarity. The second heatmap was also clustered utilizing the top 500 most variable features. However, there was clustering by Ward's method and 1 - Pearson's correlation pairwise dissimilarity. The third heatmap was constructed the same way as the second heatmap but by selecting 500 random features. For instance, it utilized the pairwise dissimilarity of 1 - Pearson's correlation and clustered by Ward's method. All analyses were performed using Version 4.3.0 of the R programming language.
 
 # Heatmap
 
@@ -58,7 +57,7 @@ All analyses were performed using Version 4.3.0 of the R programming language.
 
 Create a heatmap and display the log2 expression data using the default settings for clustering methods. Be sure to standardize your gene features. Annotate the samples (columns) with the age of the lung donor, and the day of the differentiation time-course using color bars. Write a figure caption that describes the different components of the figure.  Describe any patterns that you see in the figure.
 
-```{r fig1,fig.cap=''}
+```{r fig1,fig.cap='Clustered heat map utilizing top 500 most variable features with Euclidean distance as distance measure and complete linkage as between-group dissimilarity. Horizontally, D0 (day 0), D2 (day 2), D4 (day 4), D6 (day 6), and D8 (day 8) of when gene expressions were measured are shown on top while ages of lung cancer donor (49, 61, and 66 years) are shown below. We can discriminate days 0 and 2 from days 4, 6, and 8 based on the gene expression of lung cancer donors.'}
 fmad <- matrixStats::rowMads(aec$E) 
 rfilt <- rank(-fmad)
 fidx <- which( rfilt <= 500) 
@@ -100,7 +99,7 @@ draw(ht)
 
 Now create a figure using the same features, but changing the pairwise dissimilarity to 1 - pearson correlation and the group clustering criterion to Ward's method. Write a figure caption and describe the results in the figure.
 
-```{r Fig 2}
+```{r fig2, fig.cap='Clustered heat map utilizing top 500 most variable features with clustering by Wards method and pairwise dissimilarity of 1 - Pearsons correlation. Horizontally, D0 (day 0), D2 (day 2), D4 (day 4), D6 (day 6), and D8 (day 8) of when gene expressions were measured are shown on top while ages of lung cancer donor (49, 61, and 66 years) are shown below. We can discriminate days 0, 2, and 4, but we are unable to discriminate days 6 and 8 based on the gene expression of lung cancer donors.'}
 #call the heatmap **500 features, 1-Pearson dissimilarity**
 ht2 <- ComplexHeatmap::Heatmap(scX, column_title = "Samples",
               row_title = "Features",
@@ -116,15 +115,14 @@ ht2 <- ComplexHeatmap::Heatmap(scX, column_title = "Samples",
 
 draw(ht2)
 ```
-
-   
 Which figure do you think captures the information in the data better?
 
+Figure 2 captures the information in the data better than Figure 1. For instance, there is clear discrimination for days 0, 2, and 4 by which the gene expressions were taken by the three lung cancer donors in Figure 2. In contrast, in Figure 1, there is only discrimination between days 0 and 2.
 
 ## Use 500 features selected at random
 
 
-```{r Fig 3}
+```{r fig3, fig.cap=' Clustered heat map selecting 500 random features with clustering by Wards method and pairwise dissimilarity of 1 - Pearsons correlation. Horizontally, D0 (day 0), D2 (day 2), D4 (day 4), D6 (day 6), and D8 (day 8) of when gene expressions were measured are shown on top while ages of lung cancer donor (49, 61, and 66 years) are shown below. We can only discriminate day 0, but we are unable to discriminate the other days based on the gene expression of lung cancer donors.'}
 set.seed(2022)
 idx2 <- sample(c(1:nrow(aec$E)),500)
 X2 <- rowscale(aec$E)[idx2,]
@@ -143,9 +141,9 @@ ht3 <- ComplexHeatmap::Heatmap(scX2, column_title = "Samples",
 
 draw(ht3)
 ```
-
-
 Based on these 3 figures, describe the strength of the cluster signal you see.
+
+Utilizing random features while clustering by day for gene expression can discriminate only day 0 instead of the other days. Utilizing the top 500 features with clustering by Ward's method and pairwise dissimilarity of 1 - Pearson's correlation (Figure 2), days 0, 2, and 4 cluster and demonstrating the strongest cluster signal. The second strongest cluster signal comes from Figure 1 that discriminates days 0 and 2. Lastly, Figure 3 has the weakest cluster signal out of the three figures because utilizing random features while clustering by Ward's method and pairwise dissimilarity of 1 - Pearson's correlation can discriminate only day 0 instead of the other days.
 
 # Report computing environment
 
